@@ -203,8 +203,10 @@ export default function AdminPage() {
       if (data.success) {
         setMessages([...messages, { id: data.id, text: newMessage }]);
         setNewMessage('');
+      } else {
+        alert('Gagal menambah pesan: ' + data.error);
       }
-    } catch (e) { console.error(e); }
+    } catch (e: any) { alert('Terjadi kesalahan: ' + e.message); console.error(e); }
   };
   
   const removeMessage = async (id: number) => {
@@ -231,8 +233,10 @@ export default function AdminPage() {
         setNewCaption('');
         setNewFile(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
+      } else {
+        alert('Gagal upload foto: ' + data.error);
       }
-    } catch (e) { console.error(e); }
+    } catch (e: any) { alert('Terjadi kesalahan: ' + e.message); console.error(e); }
     setIsUploading(false);
   };
   
@@ -255,8 +259,10 @@ export default function AdminPage() {
       if (data.success) {
         setSurprises([...surprises, { id: data.id, emoji: newSurpriseEmoji, text: newSurpriseText }]);
         setNewSurpriseText(''); setNewSurpriseEmoji('🎁');
+      } else {
+        alert('Gagal menambah kejutan: ' + data.error);
       }
-    } catch (e) { console.error(e); }
+    } catch (e: any) { alert('Terjadi kesalahan: ' + e.message); console.error(e); }
   };
   
   const removeSurprise = async (id: number) => {
@@ -278,8 +284,10 @@ export default function AdminPage() {
       if (data.success) {
         setSongs([...songs, { id: data.id, url: data.url, judul: data.judul }]);
         setNewSongUrl(''); setNewSongTitle('');
+      } else {
+        alert('Gagal menambah lagu: ' + data.error);
       }
-    } catch (e) { console.error(e); }
+    } catch (e: any) { alert('Terjadi kesalahan: ' + e.message); console.error(e); }
   };
 
   const removeSong = async (id: number) => {
