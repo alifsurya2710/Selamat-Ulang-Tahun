@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to extract YouTube video ID from various URL formats
 function extractVideoId(url: string): string | null {
   const patterns = [
