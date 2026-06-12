@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { supabaseAdmin as supabase } from '@/lib/supabase';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 
@@ -22,9 +22,13 @@ export async function POST(req: NextRequest) {
     await writeFile(filepath, buffer);
     const url = `/uploads/${filename}`;
 
-    const [result] = await db.query('INSERT INTO foto (url, caption) VALUES (?, ?)', [url, caption]);
+    const { data: insertData, error } = await supabase.from('foto').insert([{ url, caption }]).select('id').single();
+    
+    if (error) {
+      throw new Error(error.message);
+    }
 
-    return NextResponse.json({ success: true, id: (result as any).insertId, url, caption });
+    return NextResponse.json({ success: true, id: insertData.id, url, caption });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
