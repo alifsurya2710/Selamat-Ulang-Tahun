@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { supabaseAdmin as supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const [rows]: any = await db.query('SELECT * FROM pengaturan');
-    const settings = rows.reduce((acc: any, row: any) => {
+    const { data, error } = await supabase.from('pengaturan').select('*');
+    if (error) throw error;
+    const settings = data.reduce((acc: any, row: any) => {
       acc[row.key] = row.value;
       return acc;
     }, {});
@@ -18,10 +19,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     for (const key of Object.keys(body)) {
-      await db.query(
-        'INSERT INTO pengaturan (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)',
-        [key, body[key]]
-      );
+      const { error } = await supabase.from('pengaturan').upsert({ key, value: body[key] });
+      if (error) throw error;
     }
     return NextResponse.json({ success: true });
   } catch (error: any) {

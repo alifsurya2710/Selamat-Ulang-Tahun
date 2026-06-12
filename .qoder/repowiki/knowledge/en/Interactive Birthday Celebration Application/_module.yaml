@@ -1,36 +1,7 @@
 schema_version: 1
 module_path: ""
 title: Interactive Birthday Celebration Application
-scope:
-    - .gitignore
-    - AGENTS.md
-    - CLAUDE.md
-    - README.md
-    - eslint.config.mjs
-    - next.config.ts
-    - package-lock.json
-    - package.json
-    - postcss.config.mjs
-    - tsconfig.json
-    - app/
-    - app\ClientLayout.tsx
-    - app\admin\page.tsx
-    - app\components\BirthdayCard.tsx
-    - app\components\BirthdayMessage.tsx
-    - app\components\MusicPlayer.tsx
-    - app\components\PhotoGallery.tsx
-    - app\context\AuthContext.tsx
-    - app\favicon.ico
-    - app\globals.css
-    - app\layout.tsx
-    - app\login\page.tsx
-    - app\page.tsx
-    - next-env.d.ts
-    - public\file.svg
-    - public\globe.svg
-    - public\next.svg
-    - public\vercel.svg
-    - public\window.svg
+scope: []
 source_files: []
 depends_on: []
 related_to: []

@@ -467,4 +467,41 @@ html, body {
   button, a {
     min-height: 44px;
   }
+
+  /* Disable noise overlay on mobile - massive perf killer */
+  .noise-overlay::after {
+    display: none;
+  }
+
+  /* Replace expensive backdrop-filter on mobile */
+  .glass, .glass-card, .glass-neo {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Kill all inline backdrop-filter on mobile - major perf killer */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Disable grid lines on mobile */
+  .grid-lines {
+    display: none;
+  }
+
+  /* Reduce animation complexity */
+  .animate-twinkle {
+    animation: none;
+    opacity: 0.3;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

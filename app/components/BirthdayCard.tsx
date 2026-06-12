@@ -31,28 +31,43 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ duration: 0.8 }}
-      className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden noise-overlay"
+      className={`fixed inset-0 flex items-center justify-center z-50 overflow-hidden${isMobile ? '' : ' noise-overlay'}`}
       style={{
         background: 'linear-gradient(135deg, #ffb3c6 0%, #ffc8d6 40%, #ffc2d1 70%, #ffb3c6 100%)',
       }}
       onClick={handleClick}
     >
-      {/* Starfield */}
+      {/* Starfield - static on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: isMobile ? 20 : 80 }, (_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-twinkle"
-            style={{
-              width: 1 + (i % 3),
-              height: 1 + (i % 3),
-              left: `${(i * 13.7) % 100}%`,
-              top: `${(i * 17.9) % 100}%`,
-              background: 'white',
-              opacity: 0.3 + (i % 5) * 0.1,
-              animationDelay: `${(i % 5) * 0.4}s`,
-            }}
-          />
+        {Array.from({ length: isMobile ? 6 : 60 }, (_, i) => (
+          isMobile ? (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: 1 + (i % 3),
+                height: 1 + (i % 3),
+                left: `${(i * 13.7) % 100}%`,
+                top: `${(i * 17.9) % 100}%`,
+                background: 'white',
+                opacity: 0.3,
+              }}
+            />
+          ) : (
+            <div
+              key={i}
+              className="absolute rounded-full animate-twinkle"
+              style={{
+                width: 1 + (i % 3),
+                height: 1 + (i % 3),
+                left: `${(i * 13.7) % 100}%`,
+                top: `${(i * 17.9) % 100}%`,
+                background: 'white',
+                opacity: 0.3 + (i % 5) * 0.1,
+                animationDelay: `${(i % 5) * 0.4}s`,
+              }}
+            />
+          )
         ))}
       </div>
 
@@ -91,9 +106,9 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
       {/* Grid */}
       {!isMobile && <div className="absolute inset-0 grid-lines opacity-20 pointer-events-none" />}
 
-      {/* Floating emojis */}
+      {/* Floating emojis - fewer on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {['✨', '💕', '🌸', '⭐', '💖', '🎀', '💫', '🌟', '🎈', '🎊', '💝', '🌺'].filter((_, i) => isMobile ? i < 4 : true).map((emoji, i) => (
+        {(isMobile ? ['✨', '💕'] : ['✨', '💕', '🌸', '⭐', '💖', '🎀', '💫', '🌟', '🎈', '🎊', '💝', '🌺']).map((emoji, i) => (
           <motion.div
             key={i}
             className="absolute text-xl"

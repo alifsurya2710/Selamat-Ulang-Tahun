@@ -201,7 +201,7 @@ export default function LoginPage() {
 
   const PIN_LENGTH = 6;
 
-  const stars = Array.from({ length: isMobile ? 20 : 60 }, (_, i) => ({
+  const stars = Array.from({ length: isMobile ? 5 : 60 }, (_, i) => ({
     x: (i * 17.3) % 100,
     y: (i * 23.7) % 100,
     size: 1 + (i % 3),
@@ -355,7 +355,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden noise-overlay"
+      className={`min-h-screen flex flex-col items-center justify-center relative overflow-hidden${isMobile ? '' : ' noise-overlay'}`}
       style={{
         background: 'linear-gradient(135deg, #ffb3c6 0%, #ffc8d6 40%, #ffc2d1 70%, #ffb3c6 100%)',
       }}
@@ -365,24 +365,24 @@ export default function LoginPage() {
         {stars.map((s, i) => <Star key={i} {...s} />)}
       </div>
 
-      {/* Particles */}
+      {/* Particles - reduced on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: isMobile ? 8 : 20 }, (_, i) => <Particle key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 0 : 20 }, (_, i) => <Particle key={i} index={i} />)}
       </div>
 
-      {/* Floating Flowers */}
+      {/* Floating Flowers - reduced on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: isMobile ? 5 : 12 }, (_, i) => <FloatingFlower key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 2 : 12 }, (_, i) => <FloatingFlower key={i} index={i} />)}
       </div>
 
-      {/* Floating Hearts (ambient) */}
+      {/* Floating Hearts - reduced on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: isMobile ? 6 : 14 }, (_, i) => <FloatingHeart key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 2 : 14 }, (_, i) => <FloatingHeart key={i} index={i} />)}
       </div>
 
-      {/* Heart Rain */}
+      {/* Heart Rain - disabled on mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: isMobile ? 8 : 18 }, (_, i) => <HeartRain key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 0 : 18 }, (_, i) => <HeartRain key={i} index={i} />)}
       </div>
       {/* Ambient glow orbs */}
       <div className="absolute inset-0 pointer-events-none">

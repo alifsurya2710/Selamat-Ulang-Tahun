@@ -1,4 +1,3 @@
-- All interactive components and pages utilize the 'use client' directive to enable React hooks and browser APIs.
-- UI components consistently employ framer-motion's motion primitives for entrance animations and interactive feedback.
-- Styling is implemented using Tailwind CSS utility classes, often combined with backdrop-blur and gradient backgrounds for a glassmorphism aesthetic.
-- Authentication state is managed globally via a custom React Context provider wrapped in a dedicated ClientLayout.
+- API routes consistently use `supabaseAdmin` from `@/lib/supabase` to bypass Row Level Security (RLS) for server-side operations.
+- Client-side components that rely on browser APIs or window objects are marked with 'use client' directive at the top of the file.
+- Dynamic content fetching in pages is performed via `fetch` calls to internal API routes within `useEffect` hooks.

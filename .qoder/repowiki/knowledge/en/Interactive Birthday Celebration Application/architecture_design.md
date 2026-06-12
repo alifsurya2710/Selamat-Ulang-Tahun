@@ -1,5 +1,5 @@
-- **Framework & Routing**: Built on Next.js 16 (App Router) with TypeScript, utilizing file-system routing for public (`/`), login (`/login`), and admin (`/admin`) pages.
-- **State Management**: Implements a custom React Context (`AuthContext`) for global authentication state, persisting user roles via `localStorage` to maintain sessions across reloads.
-- **Component Structure**: Follows a modular component architecture within `app/components/`, separating concerns for the greeting card, message display, photo gallery, and music player.
-- **Client-Side Rendering**: Heavily relies on `'use client'` directives for interactive elements, leveraging `framer-motion` for complex animations and `react-confetti` for visual effects.
-- **Admin Interface**: Provides a client-side administrative dashboard that allows dynamic customization of page titles, messages, and gallery items, stored locally in the browser.
+- **Framework**: Built on Next.js 16 (App Router) with React 19 and TypeScript.
+- **Data Layer**: Uses Supabase as the backend database, accessed via a centralized client in `lib/supabase.ts` that provides both public and admin (service role) instances.
+- **API Layer**: Implements RESTful API routes under `app/api/` for managing dynamic content such as messages (`pesan`), surprises (`kejutan`), photos (`foto`), and app settings (`pengaturan`).
+- **State Management**: Utilizes React Context (`AuthContext`) for global authentication state and local component state for UI interactions like tab switching and gift selection phases.
+- **UI Structure**: Composed of reusable UI components in `app/components/` (e.g., `BirthdayCard`, `PhotoGallery`) and page-level layouts in `app/layout.tsx` and `app/ClientLayout.tsx`.

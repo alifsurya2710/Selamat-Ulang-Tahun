@@ -9,6 +9,7 @@ import Image from 'next/image';
 interface Photo { id: number; url: string; caption: string; }
 interface Message { id: number; text: string; }
 interface Surprise { id: number; emoji: string; text: string; }
+interface Song { id: number; url: string; judul: string; }
 
 // Floating flower for admin
 function AdminFloatingFlower({ index }: { index: number }) {
@@ -123,7 +124,7 @@ export default function AdminPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [activeTab, setActiveTab] = useState<'messages' | 'photos' | 'surprise' | 'settings'>('messages');
+  const [activeTab, setActiveTab] = useState<'messages' | 'photos' | 'surprise' | 'music' | 'settings'>('messages');
   const [messages, setMessages] = useState<Message[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [surprises, setSurprises] = useState<Surprise[]>([]);
@@ -133,6 +134,9 @@ export default function AdminPage() {
   const [newCaption, setNewCaption] = useState('');
   const [newSurpriseEmoji, setNewSurpriseEmoji] = useState('🎁');
   const [newSurpriseText, setNewSurpriseText] = useState('');
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [newSongUrl, setNewSongUrl] = useState('');
+  const [newSongTitle, setNewSongTitle] = useState('');
   
   const [pageTitle, setPageTitle] = useState('');
   const [pageSubtitle, setPageSubtitle] = useState('');
@@ -143,16 +147,18 @@ export default function AdminPage() {
 
   const fetchData = async () => {
     try {
-      const [resMsg, resPhoto, resSurprise, resSet] = await Promise.all([
+      const [resMsg, resPhoto, resSurprise, resSet, resLagu] = await Promise.all([
         fetch('/api/pesan').then(r => r.json()),
         fetch('/api/foto').then(r => r.json()),
         fetch('/api/kejutan').then(r => r.json()),
         fetch('/api/pengaturan').then(r => r.json()),
+        fetch('/api/lagu').then(r => r.json()).catch(() => []),
       ]);
 
       if (Array.isArray(resMsg)) setMessages(resMsg);
       if (Array.isArray(resPhoto)) setPhotos(resPhoto);
       if (Array.isArray(resSurprise)) setSurprises(resSurprise);
+      if (Array.isArray(resLagu)) setSongs(resLagu);
       if (resSet) {
         if (resSet.judul) setPageTitle(resSet.judul);
         if (resSet.subjudul) setPageSubtitle(resSet.subjudul);
@@ -260,12 +266,36 @@ export default function AdminPage() {
     } catch (e) { console.error(e); }
   };
 
+  const addSong = async () => {
+    if (!newSongUrl.trim()) return;
+    try {
+      const res = await fetch('/api/lagu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: newSongUrl, judul: newSongTitle || 'Untitled' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSongs([...songs, { id: data.id, url: data.url, judul: data.judul }]);
+        setNewSongUrl(''); setNewSongTitle('');
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  const removeSong = async (id: number) => {
+    try {
+      await fetch(`/api/lagu?id=${id}`, { method: 'DELETE' });
+      setSongs(songs.filter(s => s.id !== id));
+    } catch (e) { console.error(e); }
+  };
+
   const handleLogout = () => { logout(); router.push('/login'); };
 
   const tabs = [
     { key: 'messages' as const, icon: '💌', label: 'Pesan', color: '#ff3e8e' },
     { key: 'photos' as const, icon: '📸', label: 'Foto', color: '#a855f7' },
     { key: 'surprise' as const, icon: '🎁', label: 'Kejutan', color: '#f5c842' },
+    { key: 'music' as const, icon: '🎵', label: 'Musik', color: '#10b981' },
     { key: 'settings' as const, icon: '⚙️', label: 'Pengaturan', color: '#63d6ff' },
   ];
 
@@ -293,22 +323,22 @@ export default function AdminPage() {
 
   return (
     <div
-      className="min-h-screen relative noise-overlay"
+      className={`min-h-screen relative${isMobile ? '' : ' noise-overlay'}`}
       style={{ background: 'linear-gradient(135deg, #ffb3c6 0%, #ffc8d6 40%, #ffc2d1 70%, #ffb3c6 100%)' }}
     >
       {/* Stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: isMobile ? 25 : 60 }, (_, i) => (
+        {Array.from({ length: isMobile ? 8 : 60 }, (_, i) => (
           <div
             key={i}
-            className="absolute rounded-full animate-twinkle"
+            className={`absolute rounded-full${isMobile ? '' : ' animate-twinkle'}`}
             style={{
               width: 1 + (i % 3),
               height: 1 + (i % 3),
               left: `${(i * 17.3) % 100}%`,
               top: `${(i * 11.7) % 100}%`,
               background: 'white',
-              opacity: 0.2 + (i % 4) * 0.1,
+              opacity: 0.25,
               animationDelay: `${(i % 6) * 0.3}s`,
             }}
           />
@@ -332,19 +362,19 @@ export default function AdminPage() {
       {/* Grid */}
       <div className="fixed inset-0 grid-lines opacity-20 pointer-events-none z-0" />
 
-      {/* Floating Flowers */}
+      {/* Floating Flowers - reduced on mobile */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: isMobile ? 4 : 10 }, (_, i) => <AdminFloatingFlower key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 2 : 10 }, (_, i) => <AdminFloatingFlower key={i} index={i} />)}
       </div>
-
-      {/* Floating Hearts ambient */}
+      
+      {/* Floating Hearts Ambient - reduced on mobile */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: isMobile ? 5 : 12 }, (_, i) => <AdminFloatingHeart key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 2 : 12 }, (_, i) => <AdminFloatingHeart key={i} index={i} />)}
       </div>
-
-      {/* Heart Rain */}
+      
+      {/* Heart Rain - disabled on mobile for perf */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: isMobile ? 5 : 14 }, (_, i) => <AdminHeartRain key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 0 : 14 }, (_, i) => <AdminHeartRain key={i} index={i} />)}
       </div>
       {/* Header */}
       <div
@@ -688,6 +718,87 @@ export default function AdminPage() {
                   ))}
                   {surprises.length === 0 && (
                     <p className="text-rose-700 text-center text-sm py-6 italic">Belum ada kejutan.</p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Music Tab */}
+          {activeTab === 'music' && (
+            <motion.div
+              key="music"
+              initial={{ opacity: 0, y: 20, rotateX: 5 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-2xl mx-auto"
+              style={{ perspective: '1000px' }}
+            >
+              <div style={cardStyle}>
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%)', borderRadius: 'inherit' }} />
+                <div className="absolute top-3 left-3 w-5 h-5 border-t border-l border-emerald-500/20 rounded-tl-lg" />
+
+                <h2 className="text-base font-semibold text-rose-950 font-medium mb-5 flex items-center gap-2.5 relative z-10">
+                  <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.2)' }}>🎵</span>
+                  Playlist Musik
+                </h2>
+
+                <p className="text-rose-800 text-xs mb-4 relative z-10" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Tambahkan link YouTube untuk diputar di halaman user. Bisa tambah beberapa lagu sekaligus.
+                </p>
+
+                <div className="flex flex-col md:flex-row gap-2 mb-5 relative z-10">
+                  <input
+                    type="text"
+                    value={newSongTitle}
+                    onChange={e => setNewSongTitle(e.target.value)}
+                    placeholder="Judul lagu..."
+                    style={{ ...inputStyle, flex: 1 }}
+                  />
+                  <input
+                    type="text"
+                    value={newSongUrl}
+                    onChange={e => setNewSongUrl(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && addSong()}
+                    placeholder="https://youtu.be/..."
+                    style={{ ...inputStyle, flex: 1.5 }}
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    onClick={addSong}
+                    className="px-5 py-3 rounded-2xl text-sm font-medium text-rose-950 font-medium relative overflow-hidden"
+                    style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 0 20px rgba(16,185,129,0.3)', color: 'white', whiteSpace: 'nowrap', flex: 'none' }}
+                  >
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%)' }} />
+                    <span className="relative">+ Tambah</span>
+                  </motion.button>
+                </div>
+
+                <div className="space-y-2 relative z-10">
+                  {songs.map((song, index) => (
+                    <motion.div
+                      key={song.id}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.04 }}
+                      className="flex items-center gap-3 group"
+                      style={listItemStyle}
+                    >
+                      <span className="text-emerald-500 text-sm w-5 text-right flex-shrink-0">{index + 1}</span>
+                      <span className="text-lg">🎵</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-rose-900 text-sm font-medium truncate">{song.judul}</p>
+                        <p className="text-rose-600 text-[10px] truncate font-mono">{song.url}</p>
+                      </div>
+                      <button
+                        onClick={() => removeSong(song.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-all text-red-400/60 hover:text-red-400 text-sm px-2 py-1 rounded-lg"
+                      >✕</button>
+                    </motion.div>
+                  ))}
+                  {songs.length === 0 && (
+                    <p className="text-rose-700 text-center text-sm py-6 italic">Belum ada lagu.</p>
                   )}
                 </div>
               </div>
