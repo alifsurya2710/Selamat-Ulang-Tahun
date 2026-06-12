@@ -461,3 +461,10 @@ html, body {
   100% { transform: scale(2.5); opacity: 0; }
 }
 .animate-ring-pulse { animation: ring-pulse 2s ease-out infinite; }
+
+/* ============ MOBILE OPTIMIZATIONS ============ */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+  }
+}

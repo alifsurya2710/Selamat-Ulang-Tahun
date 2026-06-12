@@ -105,17 +105,14 @@ export default function QRCodePage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-2xl font-black mb-1"
+            className="text-3xl font-black mb-1"
             style={{
               fontFamily: 'Playfair Display, serif',
-              background: 'linear-gradient(135deg, #c0136d, #7c1d4e)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              color: 'transparent',
+              color: '#901344',
+              textShadow: '0 2px 4px rgba(255,105,180,0.3)',
             }}
           >
-            Scan untuk Buka!
+            Spesial Untuk Kamu
           </motion.h1>
           <p className="text-rose-600 text-xs font-medium tracking-widest uppercase mb-6">
             Hadiah ulang tahun istimewa 🎂
@@ -127,36 +124,50 @@ export default function QRCodePage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 100 }}
             className="relative mx-auto mb-6"
-            style={{ width: 220, height: 220 }}
+            style={{ width: 240, height: 240 }}
           >
-            {/* Glow ring */}
+            {/* Soft pink glow background */}
             <div
-              className="absolute -inset-3 rounded-2xl"
+              className="absolute -inset-2 rounded-3xl"
               style={{
-                background: 'linear-gradient(135deg, #ff3e8e, #a855f7, #ff3e8e)',
-                backgroundSize: '200% 200%',
-                animation: 'spin 4s linear infinite',
-                padding: 3,
-                borderRadius: '1.25rem',
+                background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                boxShadow: '0 10px 30px rgba(255,154,158,0.6)',
               }}
             />
+            {/* Inner white container */}
             <div
-              className="relative rounded-2xl overflow-hidden z-10"
+              className="absolute inset-0 rounded-2xl z-10 flex items-center justify-center"
               style={{
                 background: 'white',
-                padding: 10,
-                boxShadow: '0 0 0 3px white, 0 8px 30px rgba(255,62,142,0.3)',
+                boxShadow: '0 0 0 4px white inset, 0 8px 20px rgba(255,62,142,0.15) inset',
               }}
             >
+              {/* Corner decorative dots */}
+              <div className="absolute top-3 left-3 w-2 h-2 rounded-full bg-rose-200" />
+              <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-rose-200" />
+              <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-rose-200" />
+              <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-rose-200" />
+              
               <Image
                 src="/qrcode.png"
                 alt="QR Code ulang tahun"
                 width={200}
                 height={200}
-                style={{ display: 'block', borderRadius: 8 }}
+                style={{ display: 'block', borderRadius: 12, zIndex: 20 }}
                 priority
+                unoptimized={true}
               />
             </div>
+            
+            {/* Floating heart decoration */}
+            <motion.div 
+              className="absolute -right-5 -top-5 text-4xl z-30"
+              animate={{ y: [0, -10, 0], scale: [1, 1.1, 1], rotate: [-10, 10, -10] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+              style={{ filter: 'drop-shadow(0 4px 6px rgba(255,105,180,0.4))' }}
+            >
+              💖
+            </motion.div>
           </motion.div>
 
           {/* URL label */}

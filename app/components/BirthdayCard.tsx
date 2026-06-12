@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface BirthdayCardProps {
   onOpen: () => void;
@@ -9,6 +9,14 @@ interface BirthdayCardProps {
 
 export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
   const [phase, setPhase] = useState<'idle' | 'opening' | 'opened'>('idle');
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleClick = () => {
     if (phase !== 'idle') return;
@@ -31,7 +39,7 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
     >
       {/* Starfield */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 80 }, (_, i) => (
+        {Array.from({ length: isMobile ? 20 : 80 }, (_, i) => (
           <div
             key={i}
             className="absolute rounded-full animate-twinkle"
@@ -49,41 +57,43 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
       </div>
 
       {/* Ambient orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 8, repeat: Infinity }}
-          style={{
-            position: 'absolute',
-            width: 600,
-            height: 600,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)',
-            top: '-200px',
-            left: '-150px',
-          }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
-          transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-          style={{
-            position: 'absolute',
-            width: 500,
-            height: 500,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,62,142,0.25) 0%, transparent 70%)',
-            bottom: '-150px',
-            right: '-100px',
-          }}
-        />
-      </div>
+      {!isMobile && (
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+            transition={{ duration: 8, repeat: Infinity }}
+            style={{
+              position: 'absolute',
+              width: 600,
+              height: 600,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(168,85,247,0.3) 0%, transparent 70%)',
+              top: '-200px',
+              left: '-150px',
+            }}
+          />
+          <motion.div
+            animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+            transition={{ duration: 10, repeat: Infinity, delay: 2 }}
+            style={{
+              position: 'absolute',
+              width: 500,
+              height: 500,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,62,142,0.25) 0%, transparent 70%)',
+              bottom: '-150px',
+              right: '-100px',
+            }}
+          />
+        </div>
+      )}
 
       {/* Grid */}
-      <div className="absolute inset-0 grid-lines opacity-20 pointer-events-none" />
+      {!isMobile && <div className="absolute inset-0 grid-lines opacity-20 pointer-events-none" />}
 
       {/* Floating emojis */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {['✨', '💕', '🌸', '⭐', '💖', '🎀', '💫', '🌟', '🎈', '🎊', '💝', '🌺'].map((emoji, i) => (
+        {['✨', '💕', '🌸', '⭐', '💖', '🎀', '💫', '🌟', '🎈', '🎊', '💝', '🌺'].filter((_, i) => isMobile ? i < 4 : true).map((emoji, i) => (
           <motion.div
             key={i}
             className="absolute text-xl"

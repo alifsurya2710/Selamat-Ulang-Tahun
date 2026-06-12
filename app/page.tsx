@@ -61,7 +61,7 @@ export default function Home() {
   const surpriseCardRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(true);
 
-  const stars = Array.from({ length: isMobile ? 30 : 80 }, (_, i) => ({
+  const stars = Array.from({ length: isMobile ? 15 : 80 }, (_, i) => ({
     x: (i * 11.3) % 100,
     y: (i * 17.9) % 100,
     size: 1 + (i % 3),
@@ -155,58 +155,60 @@ export default function Home() {
       </div>
 
       {/* Ambient orbs */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.3, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          style={{
-            position: 'absolute',
-            width: 800,
-            height: 800,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%)',
-            top: '-300px',
-            left: '-200px',
-          }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-          style={{
-            position: 'absolute',
-            width: 700,
-            height: 700,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,62,142,0.2) 0%, transparent 70%)',
-            bottom: '-200px',
-            right: '-200px',
-          }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
-          style={{
-            position: 'absolute',
-            width: 400,
-            height: 400,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(245,200,66,0.15) 0%, transparent 70%)',
-            top: '40%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-      </div>
+      {!isMobile && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <motion.div
+            animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.3, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute',
+              width: 800,
+              height: 800,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%)',
+              top: '-300px',
+              left: '-200px',
+            }}
+          />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+            style={{
+              position: 'absolute',
+              width: 700,
+              height: 700,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,62,142,0.2) 0%, transparent 70%)',
+              bottom: '-200px',
+              right: '-200px',
+            }}
+          />
+          <motion.div
+            animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
+            style={{
+              position: 'absolute',
+              width: 400,
+              height: 400,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(245,200,66,0.15) 0%, transparent 70%)',
+              top: '40%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        </div>
+      )}
 
       {/* Grid */}
-      <div className="fixed inset-0 grid-lines opacity-20 pointer-events-none z-0" />
+      {!isMobile && <div className="fixed inset-0 grid-lines opacity-20 pointer-events-none z-0" />}
 
       {/* Confetti */}
       {showConfetti && (
         <ReactConfetti
           width={windowSize.width}
           height={windowSize.height}
-          numberOfPieces={isMobile ? 150 : 400}
+          numberOfPieces={isMobile ? 50 : 400}
           recycle={false}
           colors={['#ff3e8e', '#a855f7', '#f5c842', '#ff6eb4', '#7c3aed', '#ec4899', '#fbbf24']}
           gravity={0.15}
@@ -326,8 +328,8 @@ export default function Home() {
                   transition={{ delay: 0.1, type: 'spring', stiffness: 80 }}
                   style={{
                     perspective: '1000px',
-                    rotateX: mousePos.y * 0.05,
-                    rotateY: mousePos.x * 0.05,
+                    rotateX: isMobile ? 0 : mousePos.y * 0.05,
+                    rotateY: isMobile ? 0 : mousePos.x * 0.05,
                   }}
                   className="relative mx-auto w-full max-w-sm mb-8"
                 >
@@ -352,7 +354,7 @@ export default function Home() {
                         background: 'linear-gradient(135deg, rgba(255,62,142,0.3), rgba(168,85,247,0.3), rgba(245,200,66,0.15), rgba(255,62,142,0.3))',
                         backgroundSize: '300% 300%',
                       }}
-                      animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
+                      animate={isMobile ? {} : { backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
                       transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                     />
 

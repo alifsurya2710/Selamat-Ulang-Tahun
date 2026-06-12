@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface Photo {
   id: number;
@@ -134,15 +135,19 @@ export default function PhotoGallery() {
                     />
 
                     {/* Photo Image */}
-                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-                      <motion.img
+                    <motion.div 
+                      className="absolute inset-0 flex items-center justify-center overflow-hidden"
+                      animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <Image
                         src={photo.url}
                         alt={photo.caption}
-                        className="w-full h-full object-cover"
-                        animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
-                        transition={{ duration: 0.6 }}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover"
                       />
-                    </div>
+                    </motion.div>
 
                     {/* Light leak */}
                     <div
