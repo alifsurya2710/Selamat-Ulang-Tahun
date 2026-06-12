@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface SpeechRecognitionEvent {
   results: {
@@ -191,6 +192,7 @@ export default function LoginPage() {
   const [lockTaps, setLockTaps] = useState(0);
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(true); // default to mobile for faster initial render
 
   const [isListening, setIsListening] = useState(false);
   const [voiceText, setVoiceText] = useState('');
@@ -199,7 +201,7 @@ export default function LoginPage() {
 
   const PIN_LENGTH = 6;
 
-  const stars = Array.from({ length: 60 }, (_, i) => ({
+  const stars = Array.from({ length: isMobile ? 20 : 60 }, (_, i) => ({
     x: (i * 17.3) % 100,
     y: (i * 23.7) % 100,
     size: 1 + (i % 3),
@@ -207,6 +209,9 @@ export default function LoginPage() {
   }));
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
@@ -362,22 +367,22 @@ export default function LoginPage() {
 
       {/* Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 20 }, (_, i) => <Particle key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 8 : 20 }, (_, i) => <Particle key={i} index={i} />)}
       </div>
 
       {/* Floating Flowers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 12 }, (_, i) => <FloatingFlower key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 5 : 12 }, (_, i) => <FloatingFlower key={i} index={i} />)}
       </div>
 
       {/* Floating Hearts (ambient) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 14 }, (_, i) => <FloatingHeart key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 6 : 14 }, (_, i) => <FloatingHeart key={i} index={i} />)}
       </div>
 
       {/* Heart Rain */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 18 }, (_, i) => <HeartRain key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 8 : 18 }, (_, i) => <HeartRain key={i} index={i} />)}
       </div>
       {/* Ambient glow orbs */}
       <div className="absolute inset-0 pointer-events-none">
@@ -468,17 +473,20 @@ export default function LoginPage() {
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 className="inline-block"
               >
-                <img 
-                  src="/logo.png" 
-                  alt="Selamat Ulang Tahun" 
-                  className="w-28 h-28 object-contain rounded-full border-2 border-pink-200"
-                  style={{ filter: 'drop-shadow(0 0 15px rgba(255,62,142,0.5))' }}
-                  onError={(e) => {
-                    // Fallback to emoji if image is not uploaded yet
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
+                <div className="relative w-28 h-28 mx-auto rounded-full border-2 border-pink-200 shadow-[0_0_15px_rgba(255,62,142,0.5)] overflow-hidden">
+                  <Image 
+                    src="/logo.png" 
+                    alt="Selamat Ulang Tahun" 
+                    fill
+                    sizes="(max-width: 768px) 112px, 112px"
+                    className="object-contain"
+                    priority
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                </div>
                 <span className="hidden text-6xl">{adminMode ? '🔐' : '🎁'}</span>
               </motion.div>
 

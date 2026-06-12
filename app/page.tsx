@@ -59,8 +59,9 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isDownloading, setIsDownloading] = useState(false);
   const surpriseCardRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(true);
 
-  const stars = Array.from({ length: 80 }, (_, i) => ({
+  const stars = Array.from({ length: isMobile ? 30 : 80 }, (_, i) => ({
     x: (i * 11.3) % 100,
     y: (i * 17.9) % 100,
     size: 1 + (i % 3),
@@ -70,6 +71,13 @@ export default function Home() {
   useEffect(() => {
     if (!role) { router.push('/login'); return; }
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    setIsMobile(window.innerWidth < 768);
+
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
 
     const handleMouse = (e: MouseEvent) => {
       setMousePos({
@@ -92,7 +100,10 @@ export default function Home() {
         if (data.length > 0) setSurprises(data);
       }).catch(console.error);
 
-    return () => window.removeEventListener('mousemove', handleMouse);
+    return () => {
+      window.removeEventListener('mousemove', handleMouse);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [role, router]);
 
   const handleCardOpen = () => {
@@ -195,7 +206,7 @@ export default function Home() {
         <ReactConfetti
           width={windowSize.width}
           height={windowSize.height}
-          numberOfPieces={400}
+          numberOfPieces={isMobile ? 150 : 400}
           recycle={false}
           colors={['#ff3e8e', '#a855f7', '#f5c842', '#ff6eb4', '#7c3aed', '#ec4899', '#fbbf24']}
           gravity={0.15}

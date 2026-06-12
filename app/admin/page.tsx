@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface Photo { id: number; url: string; caption: string; }
 interface Message { id: number; text: string; }
@@ -138,6 +139,7 @@ export default function AdminPage() {
   
   const [saved, setSaved] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -163,6 +165,10 @@ export default function AdminPage() {
   useEffect(() => {
     if (role !== 'admin') { router.push('/login'); return; }
     fetchData();
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [role, router]);
 
   const saveSettings = async () => {
@@ -292,7 +298,7 @@ export default function AdminPage() {
     >
       {/* Stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: 60 }, (_, i) => (
+        {Array.from({ length: isMobile ? 25 : 60 }, (_, i) => (
           <div
             key={i}
             className="absolute rounded-full animate-twinkle"
@@ -328,17 +334,17 @@ export default function AdminPage() {
 
       {/* Floating Flowers */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: 10 }, (_, i) => <AdminFloatingFlower key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 4 : 10 }, (_, i) => <AdminFloatingFlower key={i} index={i} />)}
       </div>
 
       {/* Floating Hearts ambient */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: 12 }, (_, i) => <AdminFloatingHeart key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 5 : 12 }, (_, i) => <AdminFloatingHeart key={i} index={i} />)}
       </div>
 
       {/* Heart Rain */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: 14 }, (_, i) => <AdminHeartRain key={i} index={i} />)}
+        {Array.from({ length: isMobile ? 5 : 14 }, (_, i) => <AdminHeartRain key={i} index={i} />)}
       </div>
       {/* Header */}
       <div
@@ -353,15 +359,17 @@ export default function AdminPage() {
           <div className="flex items-center gap-3">
             {/* Icon */}
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border-2 border-pink-200"
+              className="relative w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border-2 border-pink-200"
               style={{
                 boxShadow: '0 0 15px rgba(255,62,142,0.4)',
               }}
             >
-              <img 
+              <Image 
                 src="/logo.png" 
                 alt="Admin" 
-                className="w-full h-full object-cover" 
+                fill
+                sizes="40px"
+                className="object-cover" 
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.parentElement!.innerHTML = '👑';
