@@ -158,8 +158,11 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
             style={{
               background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 100%)',
               border: '1px solid rgba(255,255,255,0.12)',
-              backdropFilter: 'blur(20px)',
-              boxShadow: `
+              backdropFilter: isMobile ? 'blur(8px)' : 'blur(20px)',
+              boxShadow: isMobile ? `
+                0 20px 40px rgba(0,0,0,0.5),
+                0 1px 0 rgba(255,255,255,0.15) inset
+              ` : `
                 0 30px 80px rgba(0,0,0,0.7),
                 0 1px 0 rgba(255,255,255,0.15) inset,
                 0 0 60px rgba(255,62,142,0.08)

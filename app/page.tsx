@@ -371,7 +371,10 @@ export default function Home() {
                     style={{
                       background: 'linear-gradient(145deg, #1a0a2e, #2d1158)',
                       border: '1px solid rgba(255,255,255,0.08)',
-                      boxShadow: `
+                      boxShadow: isMobile ? `
+                        0 20px 40px rgba(0,0,0,0.5),
+                        0 0 0 1px rgba(255,255,255,0.05) inset
+                      ` : `
                         0 40px 80px rgba(0,0,0,0.7),
                         0 0 0 1px rgba(255,255,255,0.05) inset,
                         0 0 60px rgba(168,85,247,0.15),
@@ -380,13 +383,32 @@ export default function Home() {
                       transformStyle: 'preserve-3d',
                     }}
                   >
-                    {/* Animated gradient bg */}
+                    {/* Background Image */}
                     <div
-                    className="absolute inset-0 animate-gradient"
+                      className="absolute inset-0 bg-cover bg-center"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(255,62,142,0.3), rgba(168,85,247,0.3), rgba(245,200,66,0.15), rgba(255,62,142,0.3))',
-                        backgroundSize: '300% 300%',
+                        backgroundImage: 'url(/bg-foto.jpg)',
+                        opacity: 0.9,
                       }}
+                    />
+
+                    {/* Animated gradient bg overlay */}
+                    {!isMobile && (
+                      <div
+                        className="absolute inset-0 animate-gradient mix-blend-overlay"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(255,62,142,0.5), rgba(168,85,247,0.5), rgba(245,200,66,0.3), rgba(255,62,142,0.5))',
+                          backgroundSize: '300% 300%',
+                        }}
+                      />
+                    )}
+
+                    {/* Dark gradient overlay for text readability */}
+                    <div 
+                      className="absolute inset-0" 
+                      style={{ 
+                        background: 'linear-gradient(to top, rgba(26,10,46,0.95) 0%, rgba(26,10,46,0.5) 50%, rgba(26,10,46,0.1) 100%)' 
+                      }} 
                     />
 
                     {/* Glassy grid */}
@@ -433,8 +455,8 @@ export default function Home() {
                             WebkitTextFillColor: 'transparent',
                 color: 'transparent',
                             backgroundClip: 'text',
-                            textShadow: 'none',
-                            filter: 'drop-shadow(0 4px 20px rgba(255,62,142,0.4))',
+                            textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+                            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))',
                           }}
                         >
                           {pageTitle}
@@ -443,7 +465,8 @@ export default function Home() {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
-                          className="text-rose-900 text-sm font-light tracking-wide"
+                          className="text-white text-sm font-medium tracking-wide"
+                          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
                         >
                           {pageSubtitle}
                         </motion.p>
@@ -499,7 +522,7 @@ export default function Home() {
                   style={{
                     background: 'linear-gradient(145deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)',
                     border: '1px solid rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(20px)',
+                    backdropFilter: isMobile ? 'blur(8px)' : 'blur(20px)',
                     boxShadow: '0 30px 60px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.1) inset',
                   }}
                 >
