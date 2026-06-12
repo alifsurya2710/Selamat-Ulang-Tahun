@@ -1,0 +1,1 @@
+A personalized, interactive birthday greeting web application featuring role-based access, animated UI components, and client-side content customization.

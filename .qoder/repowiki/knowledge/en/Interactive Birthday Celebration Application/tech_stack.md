@@ -1,0 +1,4 @@
+- **Next.js 16** with React 19 for server-side rendering and client-side interactivity.
+- **Framer Motion** for declarative animations and gesture handling.
+- **Tailwind CSS v4** for utility-first styling and responsive design.
+- **TypeScript** for static type checking across the application.

@@ -1,0 +1,5 @@
+- **Framework & Routing**: Built on Next.js 16 (App Router) with TypeScript, utilizing file-system routing for public (`/`), login (`/login`), and admin (`/admin`) pages.
+- **State Management**: Implements a custom React Context (`AuthContext`) for global authentication state, persisting user roles via `localStorage` to maintain sessions across reloads.
+- **Component Structure**: Follows a modular component architecture within `app/components/`, separating concerns for the greeting card, message display, photo gallery, and music player.
+- **Client-Side Rendering**: Heavily relies on `'use client'` directives for interactive elements, leveraging `framer-motion` for complex animations and `react-confetti` for visual effects.
+- **Admin Interface**: Provides a client-side administrative dashboard that allows dynamic customization of page titles, messages, and gallery items, stored locally in the browser.

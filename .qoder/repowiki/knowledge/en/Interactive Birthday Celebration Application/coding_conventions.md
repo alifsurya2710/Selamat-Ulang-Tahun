@@ -1,0 +1,4 @@
+- All interactive components and pages utilize the 'use client' directive to enable React hooks and browser APIs.
+- UI components consistently employ framer-motion's motion primitives for entrance animations and interactive feedback.
+- Styling is implemented using Tailwind CSS utility classes, often combined with backdrop-blur and gradient backgrounds for a glassmorphism aesthetic.
+- Authentication state is managed globally via a custom React Context provider wrapped in a dedicated ClientLayout.
