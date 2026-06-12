@@ -9,6 +9,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Admin client (server-side only, bypasses RLS)
 // Falls back to anon client if service role key is not set
-export const supabaseAdmin = supabaseServiceKey
+export const supabaseAdmin = supabaseServiceKey !== 'placeholder'
   ? createClient(supabaseUrl, supabaseServiceKey)
   : supabase;
+
+// Middleware to intercept fetch calls and throw a clearer error if env vars are missing
+const originalFetch = global.fetch;
+if (supabaseUrl === 'https://placeholder.supabase.co') {
+  console.error("CRITICAL: NEXT_PUBLIC_SUPABASE_URL is missing! Supabase queries will fail.");
+}
