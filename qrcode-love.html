@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Spesial</title>
+    <!-- Tambahkan library html2canvas untuk fitur download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fdf5f6; /* Warna pink sangat muda dan ringan */
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            flex-direction: column;
+        }
+
+        /* Area yang akan diubah menjadi foto */
+        .capture-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 40px;
+            background-color: #ffffff; /* Latar putih bersih */
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.2); /* Bayangan lembut */
+        }
+
+        .heart-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .heart {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background-color: #ffb6c1; /* Warna pink pastel lembut */
+            mask-image: path('M125,69.5C125,69.5,103.8,29.7,60.9,29.7C18,29.7,0,65.9,0,102.9c0,37,37.8,84.5,125,144.1C212.2,187.4,250,139.9,250,102.9C250,65.9,232,29.7,189.1,29.7C146.2,29.7,125,69.5,125,69.5z');
+            -webkit-mask-image: path('M125,69.5C125,69.5,103.8,29.7,60.9,29.7C18,29.7,0,65.9,0,102.9c0,37,37.8,84.5,125,144.1C212.2,187.4,250,139.9,250,102.9C250,65.9,232,29.7,189.1,29.7C146.2,29.7,125,69.5,125,69.5z');
+            mask-size: cover;
+            -webkit-mask-size: cover;
+            z-index: 1;
+        }
+
+        .heart-inner {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            background-color: white;
+            mask-image: path('M105,58.4C105,58.4,87.2,24.9,51.2,24.9C15.1,24.9,0,55.4,0,86.4c0,31.1,31.8,71,105,121C178.2,157.4,210,117.5,210,86.4C210,55.4,194.9,24.9,158.8,24.9C122.8,24.9,105,58.4,105,58.4z');
+            -webkit-mask-image: path('M105,58.4C105,58.4,87.2,24.9,51.2,24.9C15.1,24.9,0,55.4,0,86.4c0,31.1,31.8,71,105,121C178.2,157.4,210,117.5,210,86.4C210,55.4,194.9,24.9,158.8,24.9C122.8,24.9,105,58.4,105,58.4z');
+            mask-size: cover;
+            -webkit-mask-size: cover;
+            z-index: 2;
+            transform: scale(0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code {
+            z-index: 3;
+            width: 120px;
+            height: 120px;
+            margin-top: -10px;
+        }
+        
+        .title {
+            margin-bottom: 25px;
+            color: #ff8da1; /* Pink manis yang tidak terlalu tajam */
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tombol download */
+        .btn-download {
+            margin-top: 30px;
+            padding: 12px 28px;
+            background-color: #ffb6c1;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .btn-download:hover {
+            background-color: #ff99aa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 182, 193, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Area yang akan di-screenshot oleh html2canvas -->
+    <div class="capture-area" id="capture">
+        <div class="title">Untuk Kamu ✨</div>
+
+        <div class="heart-container">
+            <div class="heart"></div>
+            <div class="heart-inner">
+                <!-- Tambahkan crossorigin agar canvas bisa mengambil gambar tanpa error CORS -->
+                <img class="qr-code" crossorigin="anonymous" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fselamat-ulang-tahun-kamu.vercel.app%2F" alt="QR Code">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tombol untuk mengunduh gambar -->
+    <button class="btn-download" onclick="downloadImage()">Simpan Foto (PNG)</button>
+
+    <script>
+        function downloadImage() {
+            const captureArea = document.getElementById('capture');
+            const originalBoxShadow = captureArea.style.boxShadow;
+            
+            // Hapus bayangan agar tidak ikut ter-download
+            captureArea.style.boxShadow = 'none';
+
+            // Mengubah elemen HTML menjadi gambar canvas
+            html2canvas(captureArea, {
+                useCORS: true, // Izinkan pengambilan gambar dari luar
+                backgroundColor: "#ffffff",
+                scale: 3 // Resolusi HD
+            }).then(canvas => {
+                // Kembalikan bayangan
+                captureArea.style.boxShadow = originalBoxShadow;
+
+                // Konversi canvas menjadi file PNG dan buat tautan download
+                const link = document.createElement('a');
+                link.download = 'qrcode-love-special.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                captureArea.style.boxShadow = originalBoxShadow;
+                alert("Gagal membuat gambar otomatis. Silakan ambil screenshot/tangkapan layar secara manual.");
+                console.error(err);
+            });
+        }
+    </script>
+</body>
+</html>
