@@ -2,7 +2,9 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+      executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  });
   const page = await browser.newPage();
   
   // Membuka file lokal
