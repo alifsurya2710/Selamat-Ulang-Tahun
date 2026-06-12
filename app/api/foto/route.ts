@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
 
 export async function GET() {
   try {
@@ -22,9 +20,12 @@ export async function DELETE(req: NextRequest) {
     const { data, error: selectError } = await supabase.from('foto').select('url').eq('id', id).single();
     if (!selectError && data) {
       const photoUrl = data.url;
-      const filepath = path.join(process.cwd(), 'public', photoUrl);
-      if (fs.existsSync(filepath)) {
-        fs.unlinkSync(filepath);
+      // Extract filename from the URL
+      const urlParts = photoUrl.split('/');
+      const filename = urlParts[urlParts.length - 1];
+      
+      if (filename) {
+        await supabase.storage.from('uploads').remove([filename]);
       }
     }
 

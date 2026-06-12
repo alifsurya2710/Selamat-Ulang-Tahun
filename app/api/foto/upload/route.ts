@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,10 +15,24 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     const filename = Date.now() + '-' + file.name.replace(/\s/g, '_');
-    const filepath = path.join(process.cwd(), 'public', 'uploads', filename);
+    
+    // Upload ke Supabase Storage (pastikan Anda sudah membuat bucket bernama 'uploads' yang bersifat public)
+    const { data: storageData, error: uploadError } = await supabase.storage
+      .from('uploads')
+      .upload(filename, buffer, {
+        contentType: file.type || 'image/jpeg',
+      });
 
-    await writeFile(filepath, buffer);
-    const url = `/uploads/${filename}`;
+    if (uploadError) {
+      throw new Error('Gagal upload gambar ke storage: ' + uploadError.message);
+    }
+
+    // Dapatkan public URL
+    const { data: publicUrlData } = supabase.storage
+      .from('uploads')
+      .getPublicUrl(filename);
+
+    const url = publicUrlData.publicUrl;
 
     const { data: insertData, error } = await supabase.from('foto').insert([{ url, caption }]).select('id').single();
     
