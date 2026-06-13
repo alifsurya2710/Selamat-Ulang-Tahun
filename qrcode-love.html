@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Spesial</title>
-    <!-- Tambahkan library html2canvas untuk fitur download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;600;700&display=swap');
@@ -104,7 +103,12 @@
             position: absolute;
             width: 90%;
             height: 90%;
-            background-color: #ffffff;
+            
+            /* Ganti 'foto-kamu.jpg' dengan nama file foto yang kamu upload */
+            background-image: url('foto-kamu.jpg'); 
+            background-size: cover;
+            background-position: center;
+            
             mask-image: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
             -webkit-mask-image: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
             mask-size: contain;
@@ -120,13 +124,25 @@
             transform: translateY(-2px);
         }
 
+        /* Lapisan putih transparan agar QR code tetap bisa dibaca oleh scanner */
+        .heart-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7); 
+            z-index: 1;
+        }
+
         .qr-code {
             z-index: 3;
             width: 140px;
             height: 140px;
             margin-top: -10px;
-            /* Tambahkan sedikit border radius agar terlihat manis */
             border-radius: 8px;
+            /* Efek multiply menghilangkan warna putih dari QR, sehingga foto background menembus */
+            mix-blend-mode: multiply; 
         }
         
         .subtitle {
@@ -172,7 +188,7 @@
         <div class="heart-container">
             <div class="heart"></div>
             <div class="heart-inner">
-                <!-- Kita akan load QR code ini -->
+                <div class="heart-overlay"></div>
                 <img class="qr-code" crossorigin="anonymous" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fselamat-ulang-tahun-kamu.vercel.app%2F" alt="QR Code">
             </div>
         </div>
@@ -180,14 +196,12 @@
         <div class="subtitle">Scan Ini Yaa!</div>
     </div>
 
-    <!-- Tombol untuk mengunduh gambar -->
     <button class="btn-download" onclick="downloadImage()">
         <svg style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
         Simpan Desain Terbaik Ini
     </button>
 
     <script>
-        // Pastikan font dimuat sebelum bisa download
         async function downloadImage() {
             const btn = document.querySelector('.btn-download');
             const originalText = btn.innerHTML;
@@ -195,16 +209,13 @@
             btn.style.opacity = '0.7';
             btn.style.pointerEvents = 'none';
 
-            // Menunggu font selesai dimuat untuk menghindari blur pada teks
             await document.fonts.ready;
 
             const captureArea = document.getElementById('capture');
             const originalBoxShadow = captureArea.style.boxShadow;
             
-            // Hapus shadow luar agar hasil potongannya rapi
             captureArea.style.boxShadow = 'none';
 
-            // Skala tinggi (scale: 4) untuk mencegah blur
             html2canvas(captureArea, {
                 useCORS: true,
                 backgroundColor: "#ffffff",
@@ -218,13 +229,12 @@
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
-                // Kembalikan tombol
                 btn.innerHTML = originalText;
                 btn.style.opacity = '1';
                 btn.style.pointerEvents = 'auto';
             }).catch(err => {
                 captureArea.style.boxShadow = originalBoxShadow;
-                alert("Gagal membuat gambar otomatis. Silakan ambil screenshot secara manual.");
+                alert("Gagal membuat gambar otomatis. Pastikan HTML dibuka melalui Local Server jika menggunakan foto lokal agar html2canvas bisa memprosesnya.");
                 console.error(err);
                 
                 btn.innerHTML = originalText;
