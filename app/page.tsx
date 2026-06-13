@@ -241,7 +241,7 @@ export default function Home() {
         <ReactConfetti
           width={windowSize.width}
           height={windowSize.height}
-          numberOfPieces={isMobile ? 20 : 400}
+          numberOfPieces={isMobile ? 0 : 400}
           recycle={false}
           colors={['#ff3e8e', '#a855f7', '#f5c842', '#ff6eb4', '#7c3aed', '#ec4899', '#fbbf24']}
           gravity={0.15}
@@ -675,7 +675,7 @@ export default function Home() {
                       >
                         <div className="absolute inset-0 pointer-events-none rounded-[2.5rem]" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)' }} />
                         <motion.span
-                          animate={isGiftHovered ? { y: [-5, -15, -5], scale: [1, 1.15, 1], rotate: [-5, 5, -5] } : { y: [0, -8, 0] }}
+                          animate={isMobile ? { y: 0 } : (isGiftHovered ? { y: [-5, -15, -5], scale: [1, 1.15, 1], rotate: [-5, 5, -5] } : { y: [0, -8, 0] })}
                           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                           className="text-8xl"
                           style={{ filter: 'drop-shadow(0 10px 30px rgba(255,62,142,0.5))' }}

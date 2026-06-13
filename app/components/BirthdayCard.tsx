@@ -136,7 +136,7 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
       {/* Envelope 3D Container */}
       <div className="relative" style={{ perspective: '1200px' }}>
         <motion.div
-          animate={phase !== 'idle' ? { scale: 0.88, y: -20, rotateX: -10 } : { scale: 1, y: 0, rotateX: 0 }}
+          animate={phase !== 'idle' ? { scale: 0.88, y: -20, rotateX: isMobile ? 0 : -10 } : { scale: 1, y: 0, rotateX: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-[90vw] max-w-[340px] h-[230px] cursor-pointer mx-auto"
           style={{ transformStyle: 'preserve-3d' }}
@@ -185,7 +185,7 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
                 <motion.div
-                  animate={phase === 'idle' ? {
+                  animate={phase === 'idle' && !isMobile ? {
                     y: [0, -8, 0],
                     filter: ['drop-shadow(0 0 10px rgba(255,62,142,0.4))', 'drop-shadow(0 0 25px rgba(255,62,142,0.7))', 'drop-shadow(0 0 10px rgba(255,62,142,0.4))'],
                   } : {}}
@@ -259,7 +259,7 @@ export default function BirthdayCard({ onOpen }: BirthdayCardProps) {
           initial={{ y: 0, opacity: 0 }}
           animate={
             phase === 'opened' ? { y: -200, opacity: 1, rotateX: 0 } :
-            phase === 'opening' ? { y: -50, opacity: 0.5, rotateX: 10 } :
+            phase === 'opening' ? { y: -50, opacity: 0.5, rotateX: isMobile ? 0 : 10 } :
             {}
           }
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: phase === 'opening' ? 0.3 : 0 }}

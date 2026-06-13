@@ -1,45 +1,36 @@
 const puppeteer = require('puppeteer');
-const path = require('path');
 
 (async () => {
-  const browser = await puppeteer.launch({
-      executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-  });
-  const page = await browser.newPage();
-  
-  // Set deviceScaleFactor untuk high-res (anti ngeblur)
-  await page.setViewport({
-    width: 1200,
-    height: 1000,
-    deviceScaleFactor: 4
-  });
-  
-  // Membuka file lokal
-  const filePath = 'file:///' + path.resolve(__dirname, 'qrcode-love.html').replace(/\\/g, '/');
-  await page.goto(filePath, { waitUntil: 'networkidle0' });
+    try {
+        const browser = await puppeteer.launch({ executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' });
+        const page = await browser.newPage();
+        
+        // Set higher device scale factor for high quality image and adjust viewport to fit the card nicely
+        await page.setViewport({ width: 500, height: 700, deviceScaleFactor: 4 });
+        
+        console.log('Navigating to http://localhost:8080/qrcode-love.html...');
+        await page.goto('http://localhost:8080/qrcode-love.html', { waitUntil: 'networkidle0' });
+        
+        // Wait an extra second for web fonts or anything else to be fully settled
+        await new Promise(r => setTimeout(r, 2000));
+        
+        // Hide the download button so it doesn't appear in the screenshot
+        await page.evaluate(() => {
+            const btn = document.querySelector('.btn-download');
+            if (btn) btn.style.display = 'none';
+            document.body.style.margin = '0';
+        });
 
-  // Menunggu font selesai diload
-  await page.evaluateHandle('document.fonts.ready');
-
-  // Menunggu gambar QR termuat sempurna
-  await page.waitForSelector('.qr-code');
-  await new Promise(r => setTimeout(r, 1500));
-
-  // Ambil elemen div .capture-area
-  const captureElement = await page.$('.capture-area');
-  
-  // Hapus shadow saat mau di-screenshot biar bersih tepinya
-  await page.evaluate(() => {
-    document.querySelector('.capture-area').style.boxShadow = 'none';
-  });
-
-  // Screenshot elemen dan simpan ke file utama
-  const outputPath = path.resolve(__dirname, 'qrcode-love-premium.png');
-  await captureElement.screenshot({
-    path: outputPath,
-    omitBackground: true
-  });
-
-  console.log('✅ Berhasil menggenerate qrcode-love-premium.png dengan resolusi tinggi (tidak blur) dan desain premium.');
-  await browser.close();
+        console.log('Capturing screenshot of the whole page...');
+        const body = await page.$('body');
+        
+        await body.screenshot({
+            path: 'qrcode-love-premium.png'
+        });
+        
+        console.log('Successfully saved to qrcode-love-premium.png');
+        await browser.close();
+    } catch (err) {
+        console.error('Error:', err);
+    }
 })();

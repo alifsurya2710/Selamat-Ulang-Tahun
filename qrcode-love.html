@@ -88,14 +88,8 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            mask-image: path('M130,72.8C130,72.8,108,30.8,63.3,30.8C18.7,30.8,0,68.5,0,107.1c0,38.4,39.3,87.8,130,149.9C220.7,194.9,260,145.5,260,107.1C260,68.5,241.3,30.8,196.7,30.8C152,30.8,130,72.8,130,72.8z');
-            -webkit-mask-image: path('M130,72.8C130,72.8,108,30.8,63.3,30.8C18.7,30.8,0,68.5,0,107.1c0,38.4,39.3,87.8,130,149.9C220.7,194.9,260,145.5,260,107.1C260,68.5,241.3,30.8,196.7,30.8C152,30.8,130,72.8,130,72.8z');
-            mask-size: contain;
-            -webkit-mask-size: contain;
-            mask-repeat: no-repeat;
-            -webkit-mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-position: center;
+            clip-path: path('M130,72.8C130,72.8,108,30.8,63.3,30.8C18.7,30.8,0,68.5,0,107.1c0,38.4,39.3,87.8,130,149.9C220.7,194.9,260,145.5,260,107.1C260,68.5,241.3,30.8,196.7,30.8C152,30.8,130,72.8,130,72.8z');
+            -webkit-clip-path: path('M130,72.8C130,72.8,108,30.8,63.3,30.8C18.7,30.8,0,68.5,0,107.1c0,38.4,39.3,87.8,130,149.9C220.7,194.9,260,145.5,260,107.1C260,68.5,241.3,30.8,196.7,30.8C152,30.8,130,72.8,130,72.8z');
             z-index: 1;
         }
 
@@ -103,20 +97,14 @@
             position: absolute;
             width: 90%;
             height: 90%;
-            
             /* Ganti 'foto-kamu.jpg' dengan nama file foto yang kamu upload */
             background-image: url('foto-kamu.jpg.jpeg'); 
             background-size: cover;
-            background-position: center;
+            /* Adjust the photo position to show the face clearly at the top */
+            background-position: center 0%;
             
-            mask-image: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
-            -webkit-mask-image: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
-            mask-size: contain;
-            -webkit-mask-size: contain;
-            mask-repeat: no-repeat;
-            -webkit-mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-position: center;
+            clip-path: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
+            -webkit-clip-path: path('M117,65.5C117,65.5,97.2,27.7,57,27.7C16.8,27.7,0,61.7,0,96.4c0,34.6,35.4,79,117,134.9C198.6,175.4,234,131,234,96.4C234,61.7,217.2,27.7,177,27.7C136.8,27.7,117,65.5,117,65.5z');
             z-index: 2;
             display: flex;
             justify-content: center;
@@ -131,15 +119,16 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7); 
+            background-color: rgba(255, 255, 255, 0.5); 
             z-index: 1;
         }
 
         .qr-code {
             z-index: 3;
-            width: 140px;
-            height: 140px;
-            margin-top: -10px;
+            width: 110px;
+            height: 110px;
+            /* Posisikan sedikit di bawah tengah (bukan di bawah banget) agar aman di-scan dan wajah tetap terlihat */
+            margin-top: 15px;
             border-radius: 8px;
             /* Efek multiply menghilangkan warna putih dari QR, sehingga foto background menembus */
             mix-blend-mode: multiply; 
