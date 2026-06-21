@@ -17,11 +17,28 @@ export async function POST(req: NextRequest) {
     const filename = Date.now() + '-' + file.name.replace(/\s/g, '_');
     
     // Upload ke Supabase Storage (pastikan Anda sudah membuat bucket bernama 'uploads' yang bersifat public)
-    const { data: storageData, error: uploadError } = await supabase.storage
+    let { data: storageData, error: uploadError } = await supabase.storage
       .from('uploads')
       .upload(filename, buffer, {
         contentType: file.type || 'image/jpeg',
       });
+
+    // Jika bucket tidak ditemukan, buat bucket secara otomatis dan coba upload kembali
+    if (uploadError && (uploadError.message.includes('not found') || uploadError.message.includes('Bucket not found'))) {
+      const { error: createBucketError } = await supabase.storage.createBucket('uploads', {
+        public: true,
+        allowedMimeTypes: ['image/*'],
+      });
+      if (!createBucketError) {
+        const retryResult = await supabase.storage
+          .from('uploads')
+          .upload(filename, buffer, {
+            contentType: file.type || 'image/jpeg',
+          });
+        storageData = retryResult.data;
+        uploadError = retryResult.error;
+      }
+    }
 
     if (uploadError) {
       throw new Error('Gagal upload gambar ke storage: ' + uploadError.message);

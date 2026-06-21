@@ -24,6 +24,16 @@ const rotations = [-4, 3, -3, 4, -2, 3];
 export default function PhotoGallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     fetch('/api/foto')
@@ -50,16 +60,17 @@ export default function PhotoGallery() {
           return (
             <motion.div
               key={photo.id}
-              initial={{ opacity: 0, y: 80, rotate: rotation * 2, rotateX: 20 }}
-              animate={{ opacity: 1, y: 0, rotate: rotation, rotateX: 0 }}
+              initial={{ opacity: 0, y: isMobile ? 40 : 80, rotate: isMobile ? 0 : rotation * 2, rotateX: isMobile ? 0 : 20 }}
+              animate={{ opacity: 1, y: 0, rotate: isMobile ? 0 : rotation, rotateX: 0 }}
               transition={{
-                delay: index * 0.15,
-                type: 'spring',
+                delay: index * 0.1,
+                type: isMobile ? 'tween' : 'spring',
+                duration: isMobile ? 0.45 : undefined,
                 stiffness: 70,
                 damping: 15,
               }}
-              onHoverStart={() => setHoveredIndex(index)}
-              onHoverEnd={() => setHoveredIndex(null)}
+              onHoverStart={() => !isMobile && setHoveredIndex(index)}
+              onHoverEnd={() => !isMobile && setHoveredIndex(null)}
               className="cursor-pointer relative group"
               style={{ transformStyle: 'preserve-3d' }}
             >
@@ -67,33 +78,33 @@ export default function PhotoGallery() {
               <motion.div
                 className="absolute inset-0 rounded-2xl pointer-events-none"
                 animate={{
-                  opacity: isHovered ? 0.8 : 0,
-                  scale: isHovered ? 1.1 : 1,
+                  opacity: !isMobile && isHovered ? 0.8 : 0,
+                  scale: !isMobile && isHovered ? 1.1 : 1,
                 }}
                 transition={{ duration: 0.4 }}
                 style={{
                   background: gradient.bg,
                   filter: `blur(25px)`,
                   transform: 'translateZ(-20px)',
-                  boxShadow: isHovered ? `0 0 40px ${gradient.glow}` : 'none',
+                  boxShadow: !isMobile && isHovered ? `0 0 40px ${gradient.glow}` : 'none',
                 }}
               />
 
               {/* 3D Card */}
               <motion.div
                 animate={{
-                  rotateX: isHovered ? -8 : 0,
-                  rotateY: isHovered ? (index % 2 === 0 ? 6 : -6) : 0,
-                  translateZ: isHovered ? 30 : 0,
-                  scale: isHovered ? 1.04 : 1,
+                  rotateX: !isMobile && isHovered ? -8 : 0,
+                  rotateY: !isMobile && isHovered ? (index % 2 === 0 ? 6 : -6) : 0,
+                  translateZ: !isMobile && isHovered ? 30 : 0,
+                  scale: !isMobile && isHovered ? 1.04 : 1,
                 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                 className="relative overflow-hidden rounded-2xl"
                 style={{
                   background: 'linear-gradient(145deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)',
-                  border: `1px solid ${isHovered ? gradient.accent + '40' : 'rgba(255,255,255,0.1)'}`,
-                  backdropFilter: 'blur(20px)',
-                  boxShadow: isHovered
+                  border: `1px solid ${!isMobile && isHovered ? gradient.accent + '40' : 'rgba(255,255,255,0.1)'}`,
+                  backdropFilter: isMobile ? 'blur(8px)' : 'blur(20px)',
+                  boxShadow: !isMobile && isHovered
                     ? `0 40px 80px rgba(0,0,0,0.6), 0 0 40px ${gradient.glow}, 0 1px 0 rgba(255,255,255,0.1) inset`
                     : '0 15px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset',
                   transformStyle: 'preserve-3d',
@@ -119,25 +130,27 @@ export default function PhotoGallery() {
                     <motion.div
                       className="absolute inset-0"
                       animate={{
-                        background: isHovered
+                        background: !isMobile && isHovered
                           ? `radial-gradient(circle at 50% 50%, ${gradient.accent}30 0%, transparent 70%)`
                           : 'transparent',
                       }}
                       transition={{ duration: 0.4 }}
                     />
 
-                    {/* Noise texture */}
-                    <div
-                      className="absolute inset-0 opacity-10"
-                      style={{
-                        backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
-                      }}
-                    />
+                    {/* Noise texture (disabled on mobile for performance) */}
+                    {!isMobile && (
+                      <div
+                        className="absolute inset-0 opacity-10"
+                        style={{
+                          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
+                        }}
+                      />
+                    )}
 
                     {/* Photo Image */}
                     <motion.div 
                       className="absolute inset-0 flex items-center justify-center overflow-hidden"
-                      animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+                      animate={!isMobile && isHovered ? { scale: 1.05 } : { scale: 1 }}
                       transition={{ duration: 0.6 }}
                     >
                       <Image
